@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-import { AlertTriangle, TrendingUp, Zap, Target, Shield, CloudLightning, ShoppingCart, Mail, MessageSquare, DollarSign, TreePine, Package, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
+import { AlertTriangle, TrendingUp, Zap, Target, Shield, CloudLightning, ShoppingCart, Mail, MessageSquare, DollarSign, TreePine, Package, ChevronDown, ChevronUp, ExternalLink, Database } from "lucide-react";
 
-// ─── DATA: BAKED IN FROM MAY 26 2026 RESEARCH ─────────────────────────────────
+// ─── DATA: BAKED IN FROM MAY 26 2026 RESEARCH + REAL STORE SALES ───────────────
 
 const SCAN_DATE = "May 26, 2026";
 const SCAN_WEEK = "Week of May 25–31, 2026";
 const TODAY_INDEX = 1; // Tue 5/26 — scan day, index into weeklyCalendar
+const STORE_DATA_SOURCE = "sales_forecasting_report — 5,082 SKUs, 30/90/180/365-day order velocity";
 
 const urgencyLevels = { CRITICAL: "🔴", HIGH: "🟠", MEDIUM: "🟡", WATCH: "🟢" };
 
@@ -40,6 +41,22 @@ const categories = [
       ppc: "Aggressive bids on 'hurricane kit,' 'emergency water storage,' 'wildfire smoke mask,' 'weather radio.' Boost Gulf & Atlantic coast geos.",
       sms: "Hurricane season opens 6/1. Don't wait for a cone on the map — food, water & power kits ready now → [link].",
     },
+    storeData: {
+      topSellers: [
+        { name: "MRE Entree Special — Chicken Burrito Bowl", d30: 1072, d365: 16357 },
+        { name: "2026 G.I. Issue MRE Case A or B", d30: 706, d365: 3484 },
+        { name: "2026 G.I. Issue MRE A&B 2-Pack", d30: 191, d365: 900 },
+        { name: "P-38 Can Opener — U.S. Shelby Co.", d30: 110, d365: 1155 },
+        { name: "U.S. Military Issue Foliage Sandbags (single)", d30: 110, d365: 220 },
+        { name: "MRE Entree — Chicken & Sausage Jambalaya", d30: 106, d365: 3547 },
+      ],
+      trending: [
+        { name: "Recon Mountaineer Combat Trauma Bag V3", d30: 10, d365: 10 },
+        { name: "Waterproof Matches w/ Case", d30: 32, d365: 44 },
+        { name: "U.S. Issue OCP Multicam IFAK II Medical Pouch", d30: 15, d365: 17 },
+      ],
+      insight: "MRE entrees and 2026 GI-issue cases dominate emergency volume by an order of magnitude. Sandbags hit 110 in 30 days (matching the prior 90-day total) — a real, active flood-prep spike — and trauma SKUs like the IFAK II pouch and Recon Trauma Bag are accelerating off small bases.",
+    },
   },
   {
     id: "weather",
@@ -69,6 +86,22 @@ const categories = [
       social: "Post the NOAA '8–14 storms but it only takes one' graphic with a stitched reel of a 10-minute kit build.",
       ppc: "Bid up: 'hurricane prep checklist,' 'weather radio,' 'rain gear,' 'tarps.' Front-load ahead of the June 1 demand curve.",
       sms: "Storm season opens Mon 6/1. Flash flooding hitting TX–NY now — rain gear & radios in stock → [link].",
+    },
+    storeData: {
+      topSellers: [
+        { name: "USMC FILBE Coyote Hydration Pack", d30: 43, d365: 431 },
+        { name: "US Issue Waterproof Laundry & Wet Weather Bag", d30: 34, d365: 528 },
+        { name: "USMC SealLine Medium Waterproof Stuff Sack", d30: 30, d365: 431 },
+        { name: "U.S. Issue Waterproof Wet Weather Bag", d30: 30, d365: 164 },
+        { name: "Military SealLine Large Main Pack Stuff Sack", d30: 29, d365: 384 },
+        { name: "U.S. Army ACU Poncho Liner", d30: 27, d365: 298 },
+      ],
+      trending: [
+        { name: "USMC Black SealLine Compression Stuff Sack", d30: 9, d365: 20 },
+        { name: "River's Edge 40L Waterproof Backpack (5ive Star)", d30: 14, d365: 46 },
+        { name: "U.S. Issue Waterproof Wet Weather Bag", d30: 30, d365: 164 },
+      ],
+      insight: "Waterproofing gear dominates storm response — SealLine stuff sacks, wet-weather bags, and poncho liners run the entire top 8. The standard U.S. Issue Wet Weather Bag is on a 2× annual pace, the River's Edge 40L pack on ~4× — a sharp signal that customers are actively prepping for water-exposure conditions.",
     },
   },
   {
@@ -100,6 +133,22 @@ const categories = [
       ppc: "Bid up: 'father's day gifts for dad,' 'best edc knife,' 'multi-tool gift.' Use value-tiered bundle landing pages.",
       sms: "Father's Day is 6/21. Shop EDC gifts he'll actually carry — early-bird picks live now → [link].",
     },
+    storeData: {
+      topSellers: [
+        { name: "Classic Military Style Metal Compass, OD", d30: 15, d365: 106 },
+        { name: "Streamlight Sidewinder Compact II Light Kit", d30: 12, d365: 40 },
+        { name: "ESS Ballistic Crossbow 2-Lens Glasses APEL", d30: 12, d365: 163 },
+        { name: "Rothco G.I. Style Police Whistle", d30: 9, d365: 154 },
+        { name: "Ontario Knife SP16 SPAX, ACU", d30: 9, d365: 79 },
+        { name: "Magnesium Firestarter", d30: 8, d365: 43 },
+      ],
+      trending: [
+        { name: "Streamlight Sidewinder Compact II", d30: 12, d365: 40 },
+        { name: "Magnesium Firestarter", d30: 8, d365: 43 },
+        { name: "Classic Military Metal Compass OD", d30: 15, d365: 106 },
+      ],
+      insight: "Land-navigation and fire-starting basics lead — OD compasses and Streamlight tactical lights are running at 2–4× their annual rate. The signal here is bug-out / field-readiness, NOT EDC-fashion gifting — lean Father's Day messaging into the 'practical kit' angle to match what's actually moving.",
+    },
   },
   {
     id: "surplus",
@@ -130,6 +179,22 @@ const categories = [
       ppc: "Bid up: 'military surplus boots,' 'tactical cargo pants,' 'surplus backpack,' 'cheap camping gear.'",
       sms: "Tariffs are pushing boot prices up 10–20%. Genuine surplus still in stock — shop now → [link].",
     },
+    storeData: {
+      topSellers: [
+        { name: "1 Qt. GI Military Plastic Canteen", d30: 461, d365: 2640 },
+        { name: "50 CAL Ammo Can (storage box, 12×6×7.5 in)", d30: 210, d365: 2569 },
+        { name: "Used MOLLE II ACU M4 Magazine Pouch", d30: 134, d365: 1606 },
+        { name: "Scepter Military 5-Gallon Plastic Fuel Can", d30: 84, d365: 141 },
+        { name: "U.S. Issue Triple ACU Side-x-Side Mag Pouch", d30: 83, d365: 1070 },
+        { name: "ACU MOLLE II Rucksack, Un-assembled", d30: 78, d365: 790 },
+      ],
+      trending: [
+        { name: "Scepter Military 5-Gallon Fuel Can", d30: 84, d365: 141 },
+        { name: "2-Pack FILBE Sustainment Pouch", d30: 10, d365: 10 },
+        { name: "PTS Tactical Response Multicam NYCO R/S", d30: 10, d365: 10 },
+      ],
+      insight: "The 1-qt GI canteen is the runaway surplus hit at 461 units in 30 days. The real story: the Scepter 5-gallon fuel can jumping from zero to 84 in 30 days is the clearest emergency-prep crossover signal in the surplus mix — customers are stockpiling water and fuel storage simultaneously ahead of June 1.",
+    },
   },
   {
     id: "hunting",
@@ -159,6 +224,10 @@ const categories = [
       social: "Short clip 'Where bass go after the spawn' leading into a shallow-water lure carousel.",
       ppc: "Bid up: 'post spawn bass lures,' 'walleye crankbaits,' 'turkey call closeout,' 'catfish rigs.'",
       sms: "Turkey season's closing this week. Switch to summer fishing — post-spawn tackle restocked → [link].",
+    },
+    storeData: {
+      notStocked: true,
+      insight: "Reality check from the sales file: a keyword scan of all 5,082 SKUs returned no meaningful hunting, turkey, or fishing inventory with sales velocity. The store doesn't actually stock this category — consider hiding this tile or replacing it with a category that matches the real assortment (e.g., 'MREs / Food Storage' or 'Bags & Carry').",
     },
   },
 ];
@@ -204,6 +273,29 @@ const tariffImpact = [
   { item: "General Imported Gear (Sec 122 / IEEPA)", tariff: "10% to 7/24; IEEPA 20% struck", priceImpact: "Volatile — appeals stay keeps collection on", action: "Monitor July 24 expiry; avoid overcommitting forward buys" },
 ];
 
+// ─── REAL STORE DATA: from the May 2026 sales forecasting report ────────────────
+
+const overallTopMovers = [
+  { name: "MRE Entree Special — Chicken Burrito Bowl", d30: 1072, category: "Emergency" },
+  { name: "2026 G.I. Issue MRE Case A or B", d30: 706, category: "Emergency" },
+  { name: "1 Qt. GI Military Plastic Canteen", d30: 461, category: "Surplus" },
+  { name: "50 CAL Ammo Can (storage)", d30: 210, category: "Surplus" },
+  { name: "Route Package Protection", d30: 194, category: "Shipping add-on" },
+  { name: "2026 G.I. Issue MRE A&B 2-Pack", d30: 191, category: "Emergency" },
+  { name: "Used MOLLE II ACU M4 Magazine Pouch", d30: 134, category: "Surplus" },
+  { name: "P-38 Can Opener — U.S. Shelby Co.", d30: 110, category: "Emergency" },
+  { name: "U.S. Military Issue Foliage Sandbags (single)", d30: 110, category: "Emergency" },
+  { name: "MRE Entree — Chicken & Sausage Jambalaya", d30: 106, category: "Emergency" },
+];
+
+const deadInventory = [
+  { name: "Tactical Pistol Lanyard", available: 50, d365: 5 },
+  { name: "PTS Tactical Response Multicam NYCO R/S, 2XLR", available: 42, d365: 1 },
+  { name: "USMC IMTV Shoulder Strap Yib-Yab", available: 42, d365: 2 },
+  { name: "U.S. Made Multicam MOLLE Rucksack Shoulder Harness", available: 29, d365: 1 },
+  { name: "PTS Tactical Response ODG P/C R/S, MR", available: 28, d365: 2 },
+];
+
 // ─── COMPONENTS ────────────────────────────────────────────────────────────────
 
 const COLORS = ["#ef4444", "#f97316", "#f97316", "#eab308", "#eab308"];
@@ -230,7 +322,7 @@ const UrgencyBadge = ({ level }) => {
 };
 
 const CategoryDetail = ({ cat }) => {
-  const [expanded, setExpanded] = useState({ now: true, next: true, marketing: false });
+  const [expanded, setExpanded] = useState({ now: true, next: true, marketing: false, store: true });
   const toggle = (key) => setExpanded((p) => ({ ...p, [key]: !p[key] }));
 
   return (
@@ -321,6 +413,74 @@ const CategoryDetail = ({ cat }) => {
           </div>
         )}
       </div>
+
+      {/* Store Data — REAL */}
+      {cat.storeData && (
+        <div className="bg-gray-800 rounded-lg overflow-hidden border border-cyan-900/50">
+          <button onClick={() => toggle("store")} className="w-full flex items-center justify-between p-3 hover:bg-gray-750">
+            <span className="text-sm font-semibold text-cyan-300 flex items-center gap-2">
+              <Database size={14} /> YOUR STORE — REAL TOP SELLERS (LAST 30 DAYS)
+            </span>
+            {expanded.store ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
+          </button>
+          {expanded.store && (
+            <div className="px-3 pb-3 space-y-3">
+              {cat.storeData.notStocked ? (
+                <div className="bg-yellow-950/40 border border-yellow-800/60 rounded p-3">
+                  <p className="text-xs font-bold uppercase tracking-wide text-yellow-300 mb-1">⚠ Not stocked</p>
+                  <p className="text-sm text-gray-200">{cat.storeData.insight}</p>
+                </div>
+              ) : (
+                <>
+                  <div className="bg-cyan-950/30 border border-cyan-800/50 rounded p-3">
+                    <p className="text-xs text-gray-200 leading-relaxed"><strong className="text-cyan-300">INSIGHT:</strong> {cat.storeData.insight}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-cyan-300 mb-2">Top sellers (30-day orders)</p>
+                    <div className="bg-gray-900 rounded overflow-hidden">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="border-b border-gray-700 text-gray-500">
+                            <th className="text-left p-2 font-medium">Product</th>
+                            <th className="text-right p-2 font-medium">30d</th>
+                            <th className="text-right p-2 font-medium">365d</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {cat.storeData.topSellers.map((p, i) => (
+                            <tr key={i} className="border-b border-gray-800/50">
+                              <td className="p-2 text-gray-200">{p.name}</td>
+                              <td className="p-2 text-right text-white font-mono font-bold">{p.d30.toLocaleString()}</td>
+                              <td className="p-2 text-right text-gray-400 font-mono">{p.d365.toLocaleString()}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {cat.storeData.trending && cat.storeData.trending.length > 0 && (
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wide text-green-400 mb-2">🔥 Accelerating (30-day pace &gt; annual run-rate)</p>
+                      <div className="space-y-1">
+                        {cat.storeData.trending.map((p, i) => {
+                          const ann = p.d30 * 12;
+                          const mult = p.d365 > 0 ? (ann / p.d365).toFixed(1) : "∞";
+                          return (
+                            <div key={i} className="bg-green-950/30 border border-green-900/50 rounded p-2 flex items-center justify-between">
+                              <span className="text-xs text-gray-200">{p.name}</span>
+                              <span className="text-xs font-mono text-green-400 font-bold">{mult}× annual</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -341,10 +501,11 @@ export default function ArmyNavyTrendDashboard() {
           <Shield size={28} className="text-green-500" />
           <h1 className="text-2xl font-black tracking-tight">ARMY NAVY OUTDOORS</h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <p className="text-sm text-gray-400">Weekly Trend Intelligence Scan</p>
           <span className="text-xs bg-gray-800 text-gray-300 px-2 py-0.5 rounded">{SCAN_WEEK}</span>
           <span className="text-xs bg-red-900 text-red-200 px-2 py-0.5 rounded animate-pulse">LIVE DATA</span>
+          <span className="text-xs bg-cyan-900 text-cyan-200 px-2 py-0.5 rounded">+ REAL STORE SALES</span>
         </div>
       </div>
 
@@ -430,6 +591,68 @@ export default function ArmyNavyTrendDashboard() {
                 <p className="text-sm font-semibold text-orange-300">3. Turkey-to-Fishing Handoff (Mid-week)</p>
                 <p className="text-xs text-gray-300 mt-1">Spring turkey closes this week in PA, NY, WI and New England. Run a turkey-load closeout while pivoting the hunting segment to post-spawn bass, walleye, and catfish tackle — the cleanest seasonal handoff of the year.</p>
               </div>
+            </div>
+          </div>
+
+          {/* Store-Wide Reality Check (from real sales file) */}
+          <div className="bg-gray-900 rounded-xl p-4 border border-cyan-900/50">
+            <h2 className="text-lg font-bold mb-1 flex items-center gap-2 text-cyan-300"><Database size={18} /> Store-Wide Reality Check</h2>
+            <p className="text-xs text-gray-500 mb-4">Source: {STORE_DATA_SOURCE}</p>
+
+            {/* Top 10 movers */}
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-cyan-300 mb-2">🔥 Top 10 Movers (last 30 days, store-wide)</h3>
+              <div className="bg-gray-950 rounded overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-gray-700 text-gray-500">
+                      <th className="text-left p-2 font-medium w-6">#</th>
+                      <th className="text-left p-2 font-medium">Product</th>
+                      <th className="text-left p-2 font-medium">Category</th>
+                      <th className="text-right p-2 font-medium">30-day Orders</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {overallTopMovers.map((p, i) => (
+                      <tr key={i} className="border-b border-gray-800/50">
+                        <td className="p-2 text-gray-500 font-mono">{i + 1}</td>
+                        <td className="p-2 text-gray-200">{p.name}</td>
+                        <td className="p-2 text-gray-400">{p.category}</td>
+                        <td className="p-2 text-right text-white font-mono font-bold">{p.d30.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Dead inventory */}
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-yellow-300 mb-2">⚠ Dead Inventory (≥ 20 on hand, ≤ 5 sold in 365 days)</h3>
+              <div className="bg-gray-950 rounded overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-gray-700 text-gray-500">
+                      <th className="text-left p-2 font-medium">Product</th>
+                      <th className="text-right p-2 font-medium">On Hand</th>
+                      <th className="text-right p-2 font-medium">365-day Orders</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {deadInventory.map((p, i) => (
+                      <tr key={i} className="border-b border-gray-800/50">
+                        <td className="p-2 text-gray-200">{p.name}</td>
+                        <td className="p-2 text-right text-yellow-300 font-mono">{p.available}</td>
+                        <td className="p-2 text-right text-gray-400 font-mono">{p.d365}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="bg-cyan-950/30 border border-cyan-800/50 rounded p-3 text-xs text-gray-300 leading-relaxed">
+              <strong className="text-cyan-300">Cross-reference takeaway:</strong> Your actual store is far more emergency-and-surplus heavy than the categorical research implies. MREs and surplus canteens/pouches own the top 10 by an order of magnitude, and Hunting/Turkey/Fishing has essentially zero stocked inventory — recommend hiding that tile or replacing it with a category that matches the real assortment (e.g., 'MREs & Food Storage' or 'Bags & Carry'). The Scepter 5-gallon fuel can spike (0 → 84 in 30 days) and the sandbag surge (110 in 30d vs 220 all year) confirm the hurricane/storm-prep urgency story with real customer behavior.
             </div>
           </div>
         </div>
@@ -545,7 +768,7 @@ export default function ArmyNavyTrendDashboard() {
 
       {/* Footer */}
       <div className="mt-8 pt-4 border-t border-gray-800 text-center">
-        <p className="text-xs text-gray-600">Army Navy Outdoors — Weekly Trend Intelligence | Generated {SCAN_DATE} | Sources: NOAA, NHC, SPC, AccuWeather, NWTF, MeatEater, Benchmade, GearJunkie, NBC Select, Skadden, CNBC</p>
+        <p className="text-xs text-gray-600">Army Navy Outdoors — Weekly Trend Intelligence | Generated {SCAN_DATE} | Sources: NOAA, NHC, SPC, AccuWeather, NWTF, MeatEater, Benchmade, GearJunkie, NBC Select, Skadden, CNBC + internal sales forecasting report (5,082 SKUs)</p>
       </div>
     </div>
   );
