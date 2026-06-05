@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
-import { AlertTriangle, TrendingUp, Zap, Target, Shield, CloudLightning, ShoppingCart, Mail, MessageSquare, DollarSign, TreePine, Package, ChevronDown, ChevronUp, ExternalLink, Database } from "lucide-react";
+import { AlertTriangle, TrendingUp, Zap, Target, Shield, CloudLightning, ShoppingCart, Mail, MessageSquare, DollarSign, TreePine, Package, ChevronDown, ChevronUp, ExternalLink, Database, AlertOctagon } from "lucide-react";
 
-// ─── DATA: BAKED IN FROM MAY 26 2026 RESEARCH + REAL STORE SALES ───────────────
+// ─── DATA: BAKED IN FROM JUNE 5 2026 RESEARCH + REAL STORE SALES (1,450 SKUs) ──
 
-const SCAN_DATE = "May 26, 2026";
-const SCAN_WEEK = "Week of May 25–31, 2026";
-const TODAY_INDEX = 1; // Tue 5/26 — scan day, index into weeklyCalendar
-const STORE_DATA_SOURCE = "sales_forecasting_report — 5,082 SKUs, 30/90/180/365-day order velocity";
+const SCAN_DATE = "June 5, 2026";
+const SCAN_WEEK = "Week of June 1–7, 2026";
+const TODAY_INDEX = 4; // Fri 6/5 — scan day, index into weeklyCalendar
+const STORE_DATA_SOURCE = "sales_forecasting_report — 1,450 SKUs, 7-day + 30-day order velocity";
 
 const urgencyLevels = { CRITICAL: "🔴", HIGH: "🟠", MEDIUM: "🟡", WATCH: "🟢" };
 
@@ -18,44 +18,48 @@ const categories = [
     icon: "Shield",
     urgency: "CRITICAL",
     color: "#ef4444",
-    heatScore: 94,
-    summary: "This is the peak preparedness window of the year — the Atlantic hurricane season opens Monday June 1, six days out. NOAA's May 21 below-normal outlook (8–14 named storms, 3–6 hurricanes) was paired with unusually firm warnings — 'it only takes one; Category 5s have hit during below-average seasons' — and agencies are urging the public to stock food, water, medicine, batteries and supplies NOW. Layered on top: 61%+ of the U.S. is in drought, AccuWeather projects 5.5–8 million acres burning, and wildfire smoke is forecast to reach the Midwest, Great Lakes and Northeast.",
+    heatScore: 96,
+    summary: "Atlantic hurricane season is now ACTIVE — Day 5 today, with NHC tracking the first potential disturbance. NOAA's below-normal outlook (8–14 named storms, 3–6 hurricanes) is paired with FEMA / agency messaging that 'it only takes one,' driving early-season prep purchasing. Layered demand: wildfire risk elevated across the southern tier, and the June severe-weather belt is migrating north toward the Central/Northern Plains and Upper Midwest with derecho risk this month.",
     sellingNow: [
+      "MREs & long-shelf-life food (your #1 store mover by far)",
       "Water storage, filtration & purification tablets",
-      "Long-shelf-life food — buckets, MREs, freeze-dried",
       "Portable power stations, battery banks & solar chargers",
       "NOAA weather radios, batteries & lanterns",
-      "First-aid / trauma kits & medicine organizers",
-      "N95 / respirator masks & air filtration (wildfire smoke)",
+      "First-aid / trauma kits, IFAKs & tourniquets",
+      "N95 / respirator masks (wildfire smoke belt)",
     ],
     sellingNext: [
-      "Generators, fuel cans & transfer setups",
-      "Whole-home / large-format water reserves",
+      "Generators & fuel cans (early hurricane prep)",
+      "Hurricane hardware — tarps, window film, sandbags",
       "Evacuation go-bags & document/cash kits",
-      "Sandbags & flood barriers for Gulf/coastal customers",
+      "Pet emergency kits & large-format water reserves",
     ],
-    whyNext: "The June 1 open is a hard demand trigger; even in a below-normal year, prep purchasing front-loads into late May and early June. Drought and early-season fire activity add a parallel smoke / air-quality demand stream across the eastern U.S. that extends well beyond the coast.",
+    whyNext: "We're now inside hurricane season — every named system or NHC bulletin drives a measurable purchase spike. The northward shift of the severe-weather belt in June adds Plains/Upper-Midwest tornado and derecho demand layered on top of coastal hurricane prep.",
     marketingAngles: {
-      email: "Subject: 'Hurricane Season Starts Monday — build the kit FEMA & NOAA say to have today.' Lead with a 72-hour checklist tied to the June 1 open.",
-      social: "'Below-normal forecast ≠ no risk — here's why' explainer with a 72-hour kit checklist graphic.",
-      ppc: "Aggressive bids on 'hurricane kit,' 'emergency water storage,' 'wildfire smoke mask,' 'weather radio.' Boost Gulf & Atlantic coast geos.",
-      sms: "Hurricane season opens 6/1. Don't wait for a cone on the map — food, water & power kits ready now → [link].",
+      email: "Subject: 'Day 5 of Hurricane Season — is your kit ready?' Lead with MRE bundles + a 72-hour checklist. CRITICAL internal: most popular MREs at <2 days of cover.",
+      social: "'Day 5 of Atlantic hurricane season — here's what to have in the house.' Pair with the FEMA 'it only takes one' line.",
+      ppc: "Aggressive bids on 'hurricane kit,' 'mre case,' 'emergency water storage,' 'wildfire smoke mask,' 'weather radio.' Geo-boost Gulf & Atlantic coast.",
+      sms: "Hurricane season is OPEN. Your top sellers are nearly out — MRE cases, sandbags & power kits restocking → [link].",
     },
     storeData: {
       topSellers: [
-        { name: "MRE Entree Special — Chicken Burrito Bowl", d30: 1072, d365: 16357 },
-        { name: "2026 G.I. Issue MRE Case A or B", d30: 706, d365: 3484 },
-        { name: "2026 G.I. Issue MRE A&B 2-Pack", d30: 191, d365: 900 },
-        { name: "P-38 Can Opener — U.S. Shelby Co.", d30: 110, d365: 1155 },
-        { name: "U.S. Military Issue Foliage Sandbags (single)", d30: 110, d365: 220 },
-        { name: "MRE Entree — Chicken & Sausage Jambalaya", d30: 106, d365: 3547 },
+        { name: "MRE Entree — Chicken Burrito Bowl", d30: 1120, d7: 210 },
+        { name: "2026 GI MRE Case A or B", d30: 744, d7: 172 },
+        { name: "2026 GI MRE A&B 2-Pack", d30: 221, d7: 46 },
+        { name: "MRE Entree — Mexican Beef w/ Vegetables", d30: 123, d7: 56 },
+        { name: "MRE Entree — Beef Stew", d30: 122, d7: 58 },
+        { name: "P-38 Can Opener — U.S. Shelby Co.", d30: 119, d7: 2 },
       ],
       trending: [
-        { name: "Recon Mountaineer Combat Trauma Bag V3", d30: 10, d365: 10 },
-        { name: "Waterproof Matches w/ Case", d30: 32, d365: 44 },
-        { name: "U.S. Issue OCP Multicam IFAK II Medical Pouch", d30: 15, d365: 17 },
+        { name: "Genuine US Issue MRE — 1-Meal Pack", d7: 84, d30: 109, mult: 3.3 },
+        { name: "MRE Beef Stew", d7: 58, d30: 122, mult: 2.0 },
+        { name: "MRE Pasta w/ Marinara (Veg)", d7: 54, d30: 116, mult: 2.0 },
       ],
-      insight: "MRE entrees and 2026 GI-issue cases dominate emergency volume by an order of magnitude. Sandbags hit 110 in 30 days (matching the prior 90-day total) — a real, active flood-prep spike — and trauma SKUs like the IFAK II pouch and Recon Trauma Bag are accelerating off small bases.",
+      cold: [
+        { name: "P-38 Can Opener — 10-Pack", d7: 0, d30: 11 },
+        { name: "U.S. Military Issue Sandbags (Olive)", d7: 0, d30: 10 },
+      ],
+      insight: "🚨 OOS CRITICAL: GI MRE Case at 0.6 days of cover (744 d30, only 14 on hand, NO reorder placed); MRE Chicken Burrito Bowl at 2.2 days (1,120 d30, 81 on hand). Place reorders TODAY or you lose hurricane-season demand. Genuine US Issue 1-Meal pack accelerating at 3.3× recent pace.",
     },
   },
   {
@@ -64,44 +68,98 @@ const categories = [
     icon: "CloudLightning",
     urgency: "HIGH",
     color: "#f97316",
-    heatScore: 88,
-    summary: "The week is bracketed by a wet, stormy post-Memorial-Day stretch and the June 1 hurricane season open the day after it ends. AccuWeather/SPC flag 1–4\" of rain (locally 6–8\") from southeast Texas and central Louisiana up through New York, with flash-flood and damaging-wind risk through late week, while the northern Plains and Upper Midwest run 20–30°F above normal. NOAA's May 21 outlook predicts a below-normal season driven by a developing El Niño (82% chance May–July); NHC sees no tropical formation in the next 7 days but is watching western Gulf convection and two tropical waves.",
+    heatScore: 80,
+    summary: "June's severe-weather belt is migrating north to Nebraska, Iowa, Minnesota, the Dakotas, Wisconsin, Illinois and southern Canada, with derecho risk across the Northern Plains / Upper Midwest / Great Lakes / Ohio Valley if a ridge builds over the central U.S. Flooding may affect more people than tornadoes this month — wetter-than-normal conditions are favored in the Southwest, Central Rockies, Southern High Plains and Southeast. Heat exhaustion, lightning, and rapid-onset flooding are the leading health risks.",
     sellingNow: [
-      "Rain gear, ponchos & waterproof shells (TX–Northeast flood threat)",
-      "Tarps, sandbags & water-diversion gear (flash-flood zones)",
-      "Portable fans, hydration packs & cooling gear (Midwest heat)",
-      "NOAA weather radios & battery banks",
-      "Waterproof dry bags & gear cases",
-      "Headlamps & flashlights for outage readiness",
+      "Waterproof bags, dry sacks & wet-weather bags (your top storm sellers)",
+      "Rain gear, ponchos & waterproof shells",
+      "Tarps & flood-response gear (Southwest / Southeast rain belt)",
+      "Hydration packs, cooling towels & electrolytes (heat & humidity)",
+      "Headlamps, flashlights & power banks for outage readiness",
+      "NOAA weather radios (Plains tornado / derecho belt)",
     ],
     sellingNext: [
-      "Full hurricane-prep kits (June 1 open)",
+      "Soft-shell jackets & rain shells (active accelerators)",
       "Generators & fuel storage cans",
-      "Storm shutters / window film, rope & lashing",
-      "Sandbag bulk packs for coastal / Gulf customers",
+      "Storm shutters / window film & lashing rope",
+      "Cooling fans & shade canopies as heat entrenches",
     ],
-    whyNext: "The June 1 season open creates an automatic demand trigger regardless of the below-normal forecast — this year's official messaging explicitly warns consumers not to relax. Early-season Gulf development is the historical norm, and any named system in June would spike demand instantly.",
+    whyNext: "The northward shift puts the Plains and Upper Midwest in the bullseye for the next 6 weeks — Nebraska to Wisconsin gets the next tornado / derecho cycles. Southwest and Southeast wetter-than-normal regimes drive sustained rain-gear and tarp demand.",
     marketingAngles: {
-      email: "Subject: '6 days to hurricane season — beat the rush, build your kit now.' Checklist tied to the June 1 open, plus active-flooding rain gear.",
-      social: "Post the NOAA '8–14 storms but it only takes one' graphic with a stitched reel of a 10-minute kit build.",
-      ppc: "Bid up: 'hurricane prep checklist,' 'weather radio,' 'rain gear,' 'tarps.' Front-load ahead of the June 1 demand curve.",
-      sms: "Storm season opens Mon 6/1. Flash flooding hitting TX–NY now — rain gear & radios in stock → [link].",
+      email: "Subject: 'June's storm map just shifted north.' Feature waterproofing, ponchos, headlamps; geo-target NE/IA/MN/SD/WI.",
+      social: "Map graphic: 'Where June's severe-weather belt lives this year' + a 'Do you have these tonight?' 3-item checklist.",
+      ppc: "Bid up: 'weather radio,' 'rain poncho,' 'tarp heavy duty,' 'dry bag,' 'soft shell jacket.' Front-load Northern Plains and Midwest geos.",
+      sms: "Storm belt shifted north — tornado & derecho risk this week in NE/IA/MN/SD/WI. Radios & rain gear shipping today → [link].",
     },
     storeData: {
       topSellers: [
-        { name: "USMC FILBE Coyote Hydration Pack", d30: 43, d365: 431 },
-        { name: "US Issue Waterproof Laundry & Wet Weather Bag", d30: 34, d365: 528 },
-        { name: "USMC SealLine Medium Waterproof Stuff Sack", d30: 30, d365: 431 },
-        { name: "U.S. Issue Waterproof Wet Weather Bag", d30: 30, d365: 164 },
-        { name: "Military SealLine Large Main Pack Stuff Sack", d30: 29, d365: 384 },
-        { name: "U.S. Army ACU Poncho Liner", d30: 27, d365: 298 },
+        { name: "Military SealLine Large Main Pack Stuff Sack", d30: 48, d7: 16 },
+        { name: "USMC SealLine Medium Waterproof Stuff Sack", d30: 45, d7: 15 },
+        { name: "US Issue Waterproof Wet Weather Bag", d30: 42, d7: 12 },
+        { name: "USMC FILBE Coyote Hydration Pack", d30: 40, d7: 10 },
+        { name: "USMC MARPAT Wet Weather Tarp", d30: 34, d7: 15 },
+        { name: "SealLine Waterproof Bag Bundle", d30: 26, d7: 14 },
       ],
       trending: [
-        { name: "USMC Black SealLine Compression Stuff Sack", d30: 9, d365: 20 },
-        { name: "River's Edge 40L Waterproof Backpack (5ive Star)", d30: 14, d365: 46 },
-        { name: "U.S. Issue Waterproof Wet Weather Bag", d30: 30, d365: 164 },
+        { name: "Special Ops Tactical Hooded Soft Shell Jacket", d7: 4, d30: 4, mult: 4.3 },
+        { name: "Gen III Level 6 Extreme Cold & Wet Weather Pants", d7: 3, d30: 4, mult: 3.2 },
+        { name: "U.S. Army ACU Poncho Liner (Used)", d7: 11, d30: 18, mult: 2.6 },
       ],
-      insight: "Waterproofing gear dominates storm response — SealLine stuff sacks, wet-weather bags, and poncho liners run the entire top 8. The standard U.S. Issue Wet Weather Bag is on a 2× annual pace, the River's Edge 40L pack on ~4× — a sharp signal that customers are actively prepping for water-exposure conditions.",
+      cold: [
+        { name: "USMC MARPAT Poncho Liner w/ Zipper", d7: 0, d30: 20 },
+        { name: "Scepter Military 5-Gallon Plastic Fuel Can (Used)", d7: 0, d30: 11 },
+      ],
+      insight: "Waterproofing dominates weather response — SealLine stuff sacks and the USMC Wet Weather Tarp lead, with the ACU Poncho Liner up 2.6× pace. The Scepter fuel can went cold this week after pulling 11 last month — check for supply gap or stock-out.",
+    },
+  },
+  {
+    id: "surplus",
+    name: "Military Surplus",
+    icon: "Package",
+    urgency: "HIGH",
+    color: "#f97316",
+    heatScore: 80,
+    summary: "Gorpcore continues to drive crossover demand in 2026 (muted earth tones, BDU/cargo silhouettes, surplus footwear). Summer camping season is now active — Memorial Day kicked it off and the camping segment is running hard through June. Tariffs (Section 122 10% still collected under May 12 appeals-court stay, expires July 24; ~30%+ on China; SCOTUS struck the IEEPA 20% layer) keep imported soft goods 10–20% more expensive than authentic surplus.",
+    sellingNow: [
+      "MOLLE pouches — Flash Bang Pouch BREAKING OUT (see Store Data)",
+      "Surplus packs, FILBE / ALICE / MOLLE rucks & sustainment pouches",
+      "GI canteens, ammo cans, mess kits & field cooking gear",
+      "BDU / OCP / Multicam apparel & cargo pants",
+      "Boonie hats, patrol caps & summer-weight headwear",
+      "USMC 'Charlies' shirts & dress-uniform pieces (real breakouts this week)",
+    ],
+    sellingNext: [
+      "Lightweight summer-weight surplus & sun-protective layers",
+      "Camping & sleep systems — bivies, modular sleep, cots",
+      "Father's Day-friendly surplus apparel & boots",
+      "Bulk / value bundles ahead of July 4 + summer travel",
+    ],
+    whyNext: "MOLLE accessory demand is signaling something real (Flash Bang Pouch sold 316/332 monthly units in just the last 7 days). Combined with camping-season ramp and tariff inflation on new imports, surplus is positioned to win the value conversation through summer.",
+    marketingAngles: {
+      email: "Subject: 'Field-tested. Tariff-free.' Feature MOLLE pouches, GI canteens, surplus uniform breakouts. Highlight the Flash Bang Pouch restock.",
+      social: "Gorpcore reel: 'Why surplus uniforms are the value play of 2026' — Charlies shirt + OCP + Boonie hat outfit-of-the-day.",
+      ppc: "Bid up: 'molle pouch,' 'military surplus boots,' 'alice pack,' 'boonie hat,' 'surplus cargo pants.'",
+      sms: "MOLLE pouches selling out FAST — Flash Bang Pouch 316 sold this week. Restock dropping → [link].",
+    },
+    storeData: {
+      topSellers: [
+        { name: "U.S. Issue Flash Bang MOLLE Pouch (Grade 1)", d30: 332, d7: 316 },
+        { name: "50 CAL Ammo Can (storage box)", d30: 224, d7: 20 },
+        { name: "2-Pack U.S. Issue Flash Bang MOLLE Pouch", d30: 166, d7: 158 },
+        { name: "Coyote FILBE Sustainment Pouch", d30: 95, d7: 14 },
+        { name: "Military Issue M4 Double Single Mag Pouch", d30: 84, d7: 14 },
+        { name: "1 Qt. GI Military Plastic Canteen", d30: 80, d7: 14 },
+      ],
+      trending: [
+        { name: "U.S. Issue Flash Bang MOLLE Pouch", d7: 316, d30: 332, mult: 4.1 },
+        { name: "2-Pack Flash Bang MOLLE Pouch", d7: 158, d30: 166, mult: 4.1 },
+        { name: "USMC Khaki SS 'Charlies' Shirt", d7: 9, d30: 9, mult: 4.3 },
+      ],
+      cold: [
+        { name: "U.S. Issue Multicam M4 Double Mag Pouch", d7: 0, d30: 29 },
+        { name: "Military Issue Hydration GP MOLLE Pouch (Used)", d7: 0, d30: 25 },
+      ],
+      insight: "🚨 MASSIVE BREAKOUT: BOTH Flash Bang MOLLE Pouch SKUs are stocked out at zero on-hand — 316 of 332 monthly orders for the single, and 158 of 166 for the 2-pack, came in the last 7 days. URGENT restock + homepage feature. Multiple uniform breakouts (Charlies shirt, OCP FR shirt, Boonie hat) all running 4.3× recent pace.",
     },
   },
   {
@@ -111,89 +169,45 @@ const categories = [
     urgency: "HIGH",
     color: "#f97316",
     heatScore: 78,
-    summary: "The Father's Day ramp (Sunday June 21) is now in full swing — EDC and tactical gift guides are live across the major outlets, with featured price points spanning roughly $13–$206 (knives, multi-tools, ferro rods, high-lumen lights). Post-Memorial-Day deal dynamics are unusual: 54% of adults plan to shop holiday sales (up from 36%), but average planned spend collapsed from $289 to $86 (–70%) amid high gas prices — so demand skews practical over indulgent. Section 122 (10%) plus apparel/footwear stacking is pushing imported-good prices up 10–20%.",
+    summary: "Father's Day is 16 days out — peak gift-research window. NRF projects record $22.4B in Father's Day spending with an average $199.38 per person (up ~$10 YoY); the 35–44 age cohort plans to spend $278.90. Greeting cards (58%), clothing (55%), and gift cards (50%) lead intent, but EDC knives, multi-tools, and pocket lights are perennial top-3 dad-gift categories with strong margin. Tariff pressure (~30% on Chinese EDC inputs) makes 'lock in pricing now' a credible urgency lever.",
     sellingNow: [
-      "EDC folding knives & fixed blades (Father's Day hero category)",
-      "Multi-tools & pocket organizers",
-      "EDC flashlights & headlamps (high-lumen)",
-      "Ferro rods & pocket survival tools",
-      "Belts, pouches & EDC carry organization",
-      "Watches, compasses & value gift bundles",
+      "EDC folding knives & multi-tools (Father's Day hero category)",
+      "EDC flashlights — flat-profile & high-lumen pocket lights",
+      "Compasses, whistles & navigation basics",
+      "Ferro rods & fire-starting kits",
+      "Tactical pens & EDC carry organizers",
+      "Machetes & field-utility blades (your 4.3× breakout)",
     ],
     sellingNext: [
-      "Father's Day gift sets & 'build-your-own-carry' bundles (peak 6/8–6/20)",
+      "Father's Day gift bundles — knife + light + multi-tool sets",
+      "Engravable / personalized knives (lead-time pulls these forward)",
       "Gift cards as a hedge for last-minute / practical shoppers",
-      "Premium knives for the higher-intent gift buyer",
-      "Range / utility bags & tactical backpacks",
+      "Range / utility bags & EDC backpacks",
     ],
-    whyNext: "Father's Day gifting accelerates hard through the first three weeks of June; launching bundles and gift-guide content now captures early planners. The ~70% drop in planned spend means curated, value-tiered 'practical gift' merchandising will convert better than premium-only assortments.",
+    whyNext: "Father's Day gift research peaks 10–14 days before the holiday. Shipping cutoffs for personalized gear are NOW. The $22.4B / $199 avg spend backdrop means tiered bundles ($25 / $75 / $200) will catch the full spread of shopper intent.",
     marketingAngles: {
-      email: "Subject: 'Gifts Dad will actually use — EDC picks from $13 to $206,' tiered by budget.",
-      social: "'5 EDC gifts under $50' reel targeting the practical-spend shopper. Unboxing of gift-bundle picks.",
-      ppc: "Bid up: 'father's day gifts for dad,' 'best edc knife,' 'multi-tool gift.' Use value-tiered bundle landing pages.",
-      sms: "Father's Day is 6/21. Shop EDC gifts he'll actually carry — early-bird picks live now → [link].",
+      email: "Subject: 'Gifts Dad will actually use — 16 days to Father's Day.' Bundle by budget ($25 / $75 / $200); show shipping cutoffs.",
+      social: "'5 EDC gifts under $50' + '5 under $200' carousels; unboxing reels of new pocket lights and multi-tools.",
+      ppc: "Bid up: 'father's day gifts for dad,' 'best EDC knife,' 'multi-tool gift,' 'pocket flashlight gift,' 'engraved knife.'",
+      sms: "16 days to Father's Day. Knives, lights & multi-tools he'll actually carry — bundle deals live → [link].",
     },
     storeData: {
       topSellers: [
-        { name: "Classic Military Style Metal Compass, OD", d30: 15, d365: 106 },
-        { name: "Streamlight Sidewinder Compact II Light Kit", d30: 12, d365: 40 },
-        { name: "ESS Ballistic Crossbow 2-Lens Glasses APEL", d30: 12, d365: 163 },
-        { name: "Rothco G.I. Style Police Whistle", d30: 9, d365: 154 },
-        { name: "Ontario Knife SP16 SPAX, ACU", d30: 9, d365: 79 },
-        { name: "Magnesium Firestarter", d30: 8, d365: 43 },
+        { name: "Classic Military Style Metal Compass, OD", d30: 12, d7: 0 },
+        { name: "Streamlight Sidewinder Compact II Light Kit", d30: 10, d7: 4 },
+        { name: "Gov Issue Gerber E-Tool Tri-fold Shovel", d30: 9, d7: 2 },
+        { name: "Sweetfire Strikeable Fire Starter, 8-Pack", d30: 8, d7: 0 },
+        { name: "Rothco G.I. Style Police Whistle", d30: 7, d7: 1 },
+        { name: "Ontario Knife SP16 SPAX, ACU", d30: 6, d7: 0 },
       ],
       trending: [
-        { name: "Streamlight Sidewinder Compact II", d30: 12, d365: 40 },
-        { name: "Magnesium Firestarter", d30: 8, d365: 43 },
-        { name: "Classic Military Metal Compass OD", d30: 15, d365: 106 },
+        { name: "18-inch MOLLE Machete Sheath OD", d7: 5, d30: 5, mult: 4.3 },
+        { name: "Streamlight Sidewinder Compact II", d7: 4, d30: 10, mult: 1.7 },
       ],
-      insight: "Land-navigation and fire-starting basics lead — OD compasses and Streamlight tactical lights are running at 2–4× their annual rate. The signal here is bug-out / field-readiness, NOT EDC-fashion gifting — lean Father's Day messaging into the 'practical kit' angle to match what's actually moving.",
-    },
-  },
-  {
-    id: "surplus",
-    name: "Military Surplus",
-    icon: "Package",
-    urgency: "MEDIUM",
-    color: "#eab308",
-    heatScore: 70,
-    summary: "Gorpcore remains a strong 2026 driver, now in a muted, earth-toned phase — clay, truffle, olive, khaki. Cargo pants, utility vests, fleece, and especially military-surplus boots (surplus Danners cited as the budget hero) carry both fashion and function appeal. Summer camping demand is rising into June, with the outdoor apparel market projected to grow from ~$39.7B toward $77.3B by 2035. Tariff exposure is acute for surplus-adjacent imports: leather/boots, packs, and apparel face 10–20% price increases, with leather/boot relief described as 'years away.'",
-    sellingNow: [
-      "Surplus & tactical boots (gorpcore + function crossover)",
-      "Cargo pants, utility vests & field/BDU apparel in earth tones",
-      "Surplus packs, rucks & load-bearing gear",
-      "Summer camping — tents, sleep systems, mess kits",
-      "Olive / khaki layering pieces & field shirts",
-      "Hats, gaiters & warm-weather field accessories",
-    ],
-    sellingNext: [
-      "Hot-weather camping gear — tarps, hammocks, breathable layers",
-      "Insect & sun-protection field apparel",
-      "Father's Day-friendly surplus apparel & boots",
-      "Bulk / value surplus bundles ahead of summer trips",
-    ],
-    whyNext: "Camping participation climbs through June and gorpcore keeps surplus apparel culturally relevant beyond core customers. With tariffs lifting import prices 10–20%, genuine surplus stock becomes a value differentiator worth merchandising aggressively before any further tariff actions land.",
-    marketingAngles: {
-      email: "Subject: 'Surplus boots & field gear — real gorpcore, real value (before prices climb).'",
-      social: "'Why surplus Danners beat the $300 trend boots' styling reel in earth tones.",
-      ppc: "Bid up: 'military surplus boots,' 'tactical cargo pants,' 'surplus backpack,' 'cheap camping gear.'",
-      sms: "Tariffs are pushing boot prices up 10–20%. Genuine surplus still in stock — shop now → [link].",
-    },
-    storeData: {
-      topSellers: [
-        { name: "1 Qt. GI Military Plastic Canteen", d30: 461, d365: 2640 },
-        { name: "50 CAL Ammo Can (storage box, 12×6×7.5 in)", d30: 210, d365: 2569 },
-        { name: "Used MOLLE II ACU M4 Magazine Pouch", d30: 134, d365: 1606 },
-        { name: "Scepter Military 5-Gallon Plastic Fuel Can", d30: 84, d365: 141 },
-        { name: "U.S. Issue Triple ACU Side-x-Side Mag Pouch", d30: 83, d365: 1070 },
-        { name: "ACU MOLLE II Rucksack, Un-assembled", d30: 78, d365: 790 },
+      cold: [
+        { name: "Classic Military Style Metal Compass, OD", d7: 0, d30: 12 },
       ],
-      trending: [
-        { name: "Scepter Military 5-Gallon Fuel Can", d30: 84, d365: 141 },
-        { name: "2-Pack FILBE Sustainment Pouch", d30: 10, d365: 10 },
-        { name: "PTS Tactical Response Multicam NYCO R/S", d30: 10, d365: 10 },
-      ],
-      insight: "The 1-qt GI canteen is the runaway surplus hit at 461 units in 30 days. The real story: the Scepter 5-gallon fuel can jumping from zero to 84 in 30 days is the clearest emergency-prep crossover signal in the surplus mix — customers are stockpiling water and fuel storage simultaneously ahead of June 1.",
+      insight: "Tactical is your THINNEST category (29 SKUs, only 93 d30 orders). Your #1 tactical SKU — the OD Metal Compass — went completely cold this week. With Father's Day 16 days out and NRF forecasting $199 avg spend, the assortment is missing the depth to capture this window. Consider adding multi-tool, EDC light, and folding-knife SKUs ASAP.",
     },
   },
   {
@@ -203,31 +217,31 @@ const categories = [
     urgency: "MEDIUM",
     color: "#eab308",
     heatScore: 64,
-    summary: "Spring turkey is in its final closing days — Pennsylvania (through 5/30), New York (through 5/31), Wisconsin (through 5/26) and the New England states all wrap this week, with only Maine extending to June 6. Meanwhile the calendar tips fully into the summer fishing transition: post-spawn largemouth holding shallow at dawn and dusk, walleye schooling in 8–20 ft along weed lines, channel catfish feeding hard after dark, and bluegill/crappie spawning into June as water hits the mid-60s–70s. This is the cleanest turkey-to-fishing handoff week of the year.",
+    summary: "Spring turkey season effectively closed nationwide this week — Maine wrapped on June 6. Demand has rotated fully to summer fishing patterns: post-spawn bass on offshore structure, walleye schooling, catfish in peak feed, panfish/crappie. Father's Day (6/21) further pulls fishing gear into gift consideration. This is the cleanest summer-recreation window of the year for outdoor retailers.",
     sellingNow: [
-      "TSS turkey loads, calls & decoys (final-days closeout — PA/NY/ME)",
-      "Post-spawn bass tackle — soft plastics, topwater, weightless rigs",
-      "Walleye gear — bottom-bouncers, worm harnesses, crankbaits",
+      "Summer bass tackle — soft plastics, topwater, deep crankbaits",
+      "Walleye gear — bottom-bouncers, worm harnesses",
       "Catfish setups — cut-bait rigs, glow floats, rod holders",
-      "Panfish kits — light jigs, slip bobbers, ultralight combos",
-      "Tackle storage, polarized sunglasses & quick-dry apparel",
+      "Panfish & crappie tackle",
+      "Coolers, fillet knives & live wells",
+      "UPF apparel, polarized sunglasses & bug repellent",
     ],
     sellingNext: [
-      "Kayaks, float tubes & trolling motors (summer on-water push)",
-      "Coolers & live-well / bait management gear",
-      "Bug / tick protection & UPF sun apparel",
+      "Kayaks, float tubes & trolling motors",
+      "Father's Day fishing gift bundles",
+      "Bug & tick protection (peak season)",
       "Bank-fishing & night-fishing lighting",
     ],
-    whyNext: "As turkey closes nationwide, spend rotates entirely to fishing and general summer recreation; the post-spawn bite and warming panfish window drive the highest-participation weeks of early summer. Father's Day (6/21) further pulls fishing gear into gift consideration.",
+    whyNext: "Post-spawn bite + warming panfish + active summer recreation = the highest-participation weeks of early summer. Father's Day adds gift-driven volume on top.",
     marketingAngles: {
-      email: "Subject: 'Last call: turkey-season closeout + your summer fishing starter kit.'",
+      email: "Subject: 'Summer fishing is open — your starter kit + Father's Day gift picks.'",
       social: "Short clip 'Where bass go after the spawn' leading into a shallow-water lure carousel.",
-      ppc: "Bid up: 'post spawn bass lures,' 'walleye crankbaits,' 'turkey call closeout,' 'catfish rigs.'",
-      sms: "Turkey season's closing this week. Switch to summer fishing — post-spawn tackle restocked → [link].",
+      ppc: "Bid up: 'post spawn bass lures,' 'walleye crankbaits,' 'catfish rigs,' 'father's day fishing gift.'",
+      sms: "Summer fishing season is HERE. Tackle, coolers & combos shipping today → [link].",
     },
     storeData: {
       notStocked: true,
-      insight: "Reality check from the sales file: a keyword scan of all 5,082 SKUs returned no meaningful hunting, turkey, or fishing inventory with sales velocity. The store doesn't actually stock this category — consider hiding this tile or replacing it with a category that matches the real assortment (e.g., 'MREs / Food Storage' or 'Bags & Carry').",
+      insight: "Reality check from the sales file: 0 hunting/turkey/fishing SKUs across all 1,450 active products. The store doesn't stock this category — consider hiding this tile or pivoting it to a category that matches your real assortment (MREs & Food Storage, or MOLLE & Carry, given the current sales mix).",
     },
   },
 ];
@@ -236,69 +250,79 @@ const categories = [
 const heatData = categories.map((c) => ({ name: c.name.split(" —")[0].split(" /")[0], score: c.heatScore, fill: c.color }));
 
 const channelPriorityData = [
-  { channel: "Email", weather: 90, turkey: 78, emergency: 96, edc: 90, surplus: 70 },
-  { channel: "Social", weather: 82, turkey: 82, emergency: 80, edc: 92, surplus: 88 },
-  { channel: "PPC", weather: 94, turkey: 75, emergency: 97, edc: 92, surplus: 68 },
-  { channel: "SMS", weather: 95, turkey: 70, emergency: 98, edc: 82, surplus: 60 },
+  { channel: "Email", weather: 90, turkey: 70, emergency: 98, edc: 92, surplus: 88 },
+  { channel: "Social", weather: 82, turkey: 75, emergency: 85, edc: 92, surplus: 90 },
+  { channel: "PPC", weather: 92, turkey: 70, emergency: 97, edc: 92, surplus: 80 },
+  { channel: "SMS", weather: 95, turkey: 65, emergency: 99, edc: 85, surplus: 78 },
 ];
 
 const weeklyCalendar = [
-  { day: "Mon 5/25", action: "Memorial Day: run the 'Honor & Prepare' sale finale — surplus apparel + EDC, with thank-the-troops messaging." },
-  { day: "Tue 5/26", action: "Launch the post-Memorial-Day 'Prep for Hurricane Season' email — 6-day countdown to June 1, emergency-kit hero." },
-  { day: "Wed 5/27", action: "Fishing-transition push — 'Turkey's closing, fishing's open': post-spawn tackle promo with a turkey-load closeout banner." },
-  { day: "Thu 5/28", action: "Father's Day soft launch — tiered EDC gift guide ($13–$206), value-tier emphasis given soft spending." },
-  { day: "Fri 5/29", action: "Weather-reactive flash promo — rain gear / tarps / radios tied to active TX–Northeast flooding, plus heat gear for the Midwest." },
-  { day: "Sat 5/30", action: "Weekend 'Summer Camp Kickoff' — surplus boots, camping gear, gorpcore styling. Capture PA hunters as turkey season ends." },
-  { day: "Sun 5/31", action: "Final hurricane-season countdown — 'Season opens tomorrow': emergency kits, water, power. SMS blast at peak." },
+  { day: "Mon 6/1", action: "Hurricane season OPENS. Launch 'Hurricane Season 2026 — Day 1' campaign: MRE bundles, weather radios, water/power kits. Email + SMS + PPC surge." },
+  { day: "Tue 6/2", action: "Father's Day soft launch (20 days out) — EDC gift guide tiered $25 / $75 / $200. Open landing page. Social teaser." },
+  { day: "Wed 6/3", action: "Surplus & camping push — MOLLE pouches, GI canteens, Boonie hats, OCP shirts. Gorpcore styling reel." },
+  { day: "Thu 6/4", action: "Mid-week storm refresh — northern Plains tornado / derecho risk content. Boost weather-radio PPC in NE/IA/MN/SD/WI." },
+  { day: "Fri 6/5", action: "🚨 INTERNAL: PLACE MRE REORDERS TODAY (GI MRE Case at 0.6 days cover). Flash Bang MOLLE Pouch restock notice to customers. Father's Day SMS." },
+  { day: "Sat 6/6", action: "Weekend Father's Day push + summer camp/camping kickoff — surplus boots, sleep systems, MOLLE packs. Maine turkey-season close-out note." },
+  { day: "Sun 6/7", action: "Week recap + tease 'Storm Week' next week if Northern Plains pattern locks in. Send 'Shipping cutoffs approaching' Father's Day email." },
 ];
 
 const topKeywords = [
-  { keyword: "hurricane prep kit", volume: "High", cpc: "$1.80", competition: "High", priority: "🔴" },
-  { keyword: "emergency water storage", volume: "High", cpc: "$1.40", competition: "Med", priority: "🔴" },
-  { keyword: "weather radio NOAA", volume: "High", cpc: "$1.10", competition: "Med", priority: "🔴" },
-  { keyword: "father's day gifts for dad", volume: "Very High", cpc: "$1.30", competition: "High", priority: "🔴" },
+  { keyword: "hurricane prep kit", volume: "Very High", cpc: "$1.90", competition: "High", priority: "🔴" },
+  { keyword: "mre case", volume: "High", cpc: "$1.20", competition: "Med", priority: "🔴" },
+  { keyword: "noaa weather radio", volume: "High", cpc: "$1.10", competition: "Med", priority: "🔴" },
+  { keyword: "father's day gifts for dad", volume: "Very High", cpc: "$1.40", competition: "High", priority: "🔴" },
   { keyword: "best EDC knife", volume: "High", cpc: "$1.60", competition: "High", priority: "🟠" },
   { keyword: "military surplus boots", volume: "Med", cpc: "$0.95", competition: "Med", priority: "🟠" },
-  { keyword: "post spawn bass lures", volume: "Med", cpc: "$0.85", competition: "Med", priority: "🟡" },
+  { keyword: "molle pouch", volume: "Med", cpc: "$0.85", competition: "Med", priority: "🟠" },
   { keyword: "multi-tool gift", volume: "Med", cpc: "$1.15", competition: "Med", priority: "🟠" },
-  { keyword: "wildfire smoke mask N95", volume: "Med", cpc: "$1.05", competition: "Med", priority: "🟡" },
-  { keyword: "tactical cargo pants", volume: "Med", cpc: "$0.90", competition: "Med", priority: "🟡" },
+  { keyword: "tarp heavy duty", volume: "Med", cpc: "$0.90", competition: "Med", priority: "🟡" },
+  { keyword: "boonie hat military", volume: "Med", cpc: "$0.70", competition: "Low", priority: "🟡" },
 ];
 
 const tariffImpact = [
-  { item: "Technical Backpacks (Vietnam)", tariff: "10%+ (up to ~25% stacked)", priceImpact: "+~10-20% at retail", action: "Stock now; feature pre-increase pricing as an urgency hook" },
+  { item: "Technical Backpacks (Vietnam)", tariff: "10%+ (up to ~25% stacked)", priceImpact: "+~10-20% retail", action: "Stock now; feature pre-increase pricing as urgency hook" },
   { item: "Boots & Leather Goods (China & Vietnam)", tariff: "30-70% CN / 0-32% VN", priceImpact: "+10-20%; relief 'years away'", action: "Lean into genuine surplus boots as the value alternative" },
   { item: "Field / Cargo Apparel (China & Vietnam)", tariff: "30-70% CN / 0-32% VN", priceImpact: "+10-20% on imported soft goods", action: "Promote earth-tone surplus apparel margin advantage" },
-  { item: "TSS Turkey Loads (imported components)", tariff: "Sec 122 10% layer", priceImpact: "Modest single-digit %", action: "Close out remaining season stock before reorder repricing" },
+  { item: "EDC Knives, Lights & Multi-Tools (China)", tariff: "~30%+", priceImpact: "+15-25% on import-dependent SKUs", action: "Bundle for Father's Day now; 'lock in pricing before hikes'" },
   { item: "General Imported Gear (Sec 122 / IEEPA)", tariff: "10% to 7/24; IEEPA 20% struck", priceImpact: "Volatile — appeals stay keeps collection on", action: "Monitor July 24 expiry; avoid overcommitting forward buys" },
 ];
 
-// ─── REAL STORE DATA: from the May 2026 sales forecasting report ────────────────
+// ─── REAL STORE DATA: from the June 5, 2026 sales forecasting report ──────────
 
 const overallTopMovers = [
-  { name: "MRE Entree Special — Chicken Burrito Bowl", d30: 1072, category: "Emergency" },
-  { name: "2026 G.I. Issue MRE Case A or B", d30: 706, category: "Emergency" },
-  { name: "1 Qt. GI Military Plastic Canteen", d30: 461, category: "Surplus" },
-  { name: "50 CAL Ammo Can (storage)", d30: 210, category: "Surplus" },
-  { name: "Route Package Protection", d30: 194, category: "Shipping add-on" },
-  { name: "2026 G.I. Issue MRE A&B 2-Pack", d30: 191, category: "Emergency" },
-  { name: "Used MOLLE II ACU M4 Magazine Pouch", d30: 134, category: "Surplus" },
-  { name: "P-38 Can Opener — U.S. Shelby Co.", d30: 110, category: "Emergency" },
-  { name: "U.S. Military Issue Foliage Sandbags (single)", d30: 110, category: "Emergency" },
-  { name: "MRE Entree — Chicken & Sausage Jambalaya", d30: 106, category: "Emergency" },
+  { name: "MRE Entree — Chicken Burrito Bowl", d30: 1120, d7: 210, category: "Emergency" },
+  { name: "2026 GI MRE Case A or B", d30: 744, d7: 172, category: "Emergency" },
+  { name: "Rothco Reflective Elastic PT Belt", d30: 577, d7: 1, category: "Other" },
+  { name: "U.S. Issue Flash Bang MOLLE Pouch", d30: 332, d7: 316, category: "Surplus" },
+  { name: "50 CAL Ammo Can (storage)", d30: 224, d7: 20, category: "Surplus" },
+  { name: "2026 GI MRE A&B 2-Pack", d30: 221, d7: 46, category: "Emergency" },
+  { name: "2-Pack Flash Bang MOLLE Pouch", d30: 166, d7: 158, category: "Surplus" },
+  { name: "Route Package Protection", d30: 126, d7: 32, category: "Shipping" },
+  { name: "MRE Entree — Mexican Beef w/ Vegetables", d30: 123, d7: 56, category: "Emergency" },
+  { name: "MRE Entree — Beef Stew", d30: 122, d7: 58, category: "Emergency" },
 ];
 
-const deadInventory = [
-  { name: "Tactical Pistol Lanyard", available: 50, d365: 5 },
-  { name: "PTS Tactical Response Multicam NYCO R/S, 2XLR", available: 42, d365: 1 },
-  { name: "USMC IMTV Shoulder Strap Yib-Yab", available: 42, d365: 2 },
-  { name: "U.S. Made Multicam MOLLE Rucksack Shoulder Harness", available: 29, d365: 1 },
-  { name: "PTS Tactical Response ODG P/C R/S, MR", available: 28, d365: 2 },
+const breakouts = [
+  { name: "U.S. Issue Flash Bang MOLLE Pouch", d7: 316, d30: 332, mult: 4.1, category: "Surplus" },
+  { name: "2-Pack Flash Bang MOLLE Pouch", d7: 158, d30: 166, mult: 4.1, category: "Surplus" },
+  { name: "Genuine US Issue MRE — 1-Meal Pack", d7: 84, d30: 109, mult: 3.3, category: "Emergency" },
+  { name: "Used MOLLE II ACU M4 Mag Pouch", d7: 65, d30: 108, mult: 2.6, category: "Surplus" },
+  { name: "MRE Entree — Beef Stew", d7: 58, d30: 122, mult: 2.0, category: "Emergency" },
+  { name: "Spiced Apples MRE Special", d7: 54, d30: 114, mult: 2.0, category: "Emergency" },
+];
+
+const outOfStockRisk = [
+  { name: "2026 GI MRE Case A or B", oh: 14, d30: 744, cover: 0.6, status: "CRITICAL — no reorder placed" },
+  { name: "U.S. Issue Flash Bang MOLLE Pouch", oh: 0, d30: 332, cover: 0.0, status: "ALREADY OOS" },
+  { name: "2-Pack Flash Bang MOLLE Pouch", oh: 0, d30: 166, cover: 0.0, status: "ALREADY OOS" },
+  { name: "2026 GI MRE A&B 2-Pack", oh: 7, d30: 221, cover: 1.0, status: "CRITICAL — 1 day cover" },
+  { name: "Rothco Reflective Elastic PT Belt", oh: 23, d30: 577, cover: 1.2, status: "Note: d7=1, may be cooling" },
+  { name: "MRE Entree — Chicken Burrito Bowl", oh: 81, d30: 1120, cover: 2.2, status: "URGENT — your #1 seller" },
 ];
 
 // ─── COMPONENTS ────────────────────────────────────────────────────────────────
 
-const COLORS = ["#ef4444", "#f97316", "#f97316", "#eab308", "#eab308"];
+const COLORS = ["#ef4444", "#f97316", "#f97316", "#f97316", "#eab308"];
 
 const TabButton = ({ active, onClick, children, color }) => (
   <button
@@ -419,7 +443,7 @@ const CategoryDetail = ({ cat }) => {
         <div className="bg-gray-800 rounded-lg overflow-hidden border border-cyan-900/50">
           <button onClick={() => toggle("store")} className="w-full flex items-center justify-between p-3 hover:bg-gray-750">
             <span className="text-sm font-semibold text-cyan-300 flex items-center gap-2">
-              <Database size={14} /> YOUR STORE — REAL TOP SELLERS (LAST 30 DAYS)
+              <Database size={14} /> YOUR STORE — REAL DATA (7-DAY + 30-DAY VELOCITY)
             </span>
             {expanded.store ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
           </button>
@@ -436,14 +460,14 @@ const CategoryDetail = ({ cat }) => {
                     <p className="text-xs text-gray-200 leading-relaxed"><strong className="text-cyan-300">INSIGHT:</strong> {cat.storeData.insight}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-cyan-300 mb-2">Top sellers (30-day orders)</p>
+                    <p className="text-xs font-bold uppercase tracking-wide text-cyan-300 mb-2">Top sellers (30-day & 7-day orders)</p>
                     <div className="bg-gray-900 rounded overflow-hidden">
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="border-b border-gray-700 text-gray-500">
                             <th className="text-left p-2 font-medium">Product</th>
                             <th className="text-right p-2 font-medium">30d</th>
-                            <th className="text-right p-2 font-medium">365d</th>
+                            <th className="text-right p-2 font-medium">7d</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -451,7 +475,7 @@ const CategoryDetail = ({ cat }) => {
                             <tr key={i} className="border-b border-gray-800/50">
                               <td className="p-2 text-gray-200">{p.name}</td>
                               <td className="p-2 text-right text-white font-mono font-bold">{p.d30.toLocaleString()}</td>
-                              <td className="p-2 text-right text-gray-400 font-mono">{p.d365.toLocaleString()}</td>
+                              <td className="p-2 text-right text-gray-400 font-mono">{p.d7.toLocaleString()}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -460,18 +484,27 @@ const CategoryDetail = ({ cat }) => {
                   </div>
                   {cat.storeData.trending && cat.storeData.trending.length > 0 && (
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-wide text-green-400 mb-2">🔥 Accelerating (30-day pace &gt; annual run-rate)</p>
+                      <p className="text-xs font-bold uppercase tracking-wide text-green-400 mb-2">🔥 Accelerating (7-day pace &gt; 30-day average)</p>
                       <div className="space-y-1">
-                        {cat.storeData.trending.map((p, i) => {
-                          const ann = p.d30 * 12;
-                          const mult = p.d365 > 0 ? (ann / p.d365).toFixed(1) : "∞";
-                          return (
-                            <div key={i} className="bg-green-950/30 border border-green-900/50 rounded p-2 flex items-center justify-between">
-                              <span className="text-xs text-gray-200">{p.name}</span>
-                              <span className="text-xs font-mono text-green-400 font-bold">{mult}× annual</span>
-                            </div>
-                          );
-                        })}
+                        {cat.storeData.trending.map((p, i) => (
+                          <div key={i} className="bg-green-950/30 border border-green-900/50 rounded p-2 flex items-center justify-between gap-2">
+                            <span className="text-xs text-gray-200">{p.name}</span>
+                            <span className="text-xs font-mono text-green-400 font-bold whitespace-nowrap">{p.mult.toFixed(1)}× pace · 7d:{p.d7}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {cat.storeData.cold && cat.storeData.cold.length > 0 && (
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">❄ Going cold (0 sold this week, was selling)</p>
+                      <div className="space-y-1">
+                        {cat.storeData.cold.map((p, i) => (
+                          <div key={i} className="bg-gray-900 border border-gray-700/50 rounded p-2 flex items-center justify-between gap-2">
+                            <span className="text-xs text-gray-300">{p.name}</span>
+                            <span className="text-xs font-mono text-gray-400 whitespace-nowrap">7d:0 · 30d:{p.d30}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -511,10 +544,10 @@ export default function ArmyNavyTrendDashboard() {
 
       {/* Alert Banner */}
       <div className="bg-red-950 border border-red-800 rounded-lg p-3 mb-6 flex items-start gap-3">
-        <AlertTriangle size={20} className="text-red-400 mt-0.5 flex-shrink-0" />
+        <AlertOctagon size={20} className="text-red-400 mt-0.5 flex-shrink-0" />
         <div>
-          <p className="text-sm font-bold text-red-300">CRITICAL ALERT — Atlantic Hurricane Season Opens June 1</p>
-          <p className="text-xs text-red-400 mt-1">Hurricane season opens Monday June 1 — six days out. NOAA's May 21 outlook calls for a below-normal season (8–14 named storms), but officials are hammering 'it only takes one.' Meanwhile flash-flood and damaging-wind risk runs from Texas to New York through late week, and wildfire smoke is reaching the Midwest, Great Lakes and Northeast. Prepare now, before the season opens.</p>
+          <p className="text-sm font-bold text-red-300">CRITICAL ALERT — Hurricane Season Open + MRE Inventory at 0.6 Days Cover</p>
+          <p className="text-xs text-red-400 mt-1">Atlantic hurricane season opened Monday June 1 — Day 5 today. NOAA forecast 8–14 named storms (below-normal but 'it only takes one'). The June severe-weather belt is shifting north to NE/IA/MN/SD/WI with derecho risk. <strong>INTERNAL URGENT:</strong> Your top MRE SKU (GI MRE Case, 744 d30 orders) has 14 on hand and NO reorder placed — 0.6 days of cover. Both Flash Bang MOLLE Pouch SKUs already OOS after selling 474 units this past week. Place reorders TODAY.</p>
         </div>
       </div>
 
@@ -580,28 +613,86 @@ export default function ArmyNavyTrendDashboard() {
             <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Zap size={18} className="text-yellow-400" /> Top 3 Actions This Week</h2>
             <div className="space-y-3">
               <div className="bg-red-950/50 border border-red-800/50 rounded-lg p-3">
-                <p className="text-sm font-semibold text-red-300">1. Hurricane Season Countdown (Season opens 6/1)</p>
-                <p className="text-xs text-gray-300 mt-1">The Atlantic season opens Monday — six days out. Despite NOAA's below-normal forecast, 'it only takes one' is the official line. Front-load kit, water, power, and radio merchandising and run a daily countdown; close it with a Sunday 'season opens tomorrow' SMS blast.</p>
+                <p className="text-sm font-semibold text-red-300">1. 🚨 URGENT — Restock MRE Inventory TODAY</p>
+                <p className="text-xs text-gray-300 mt-1">GI MRE Case at 0.6 days of cover (744 d30, 14 on hand, NO reorder placed); MRE Chicken Burrito Bowl at 2.2 days (1,120 d30, 81 on hand). Place reorders today or you stock out before the weekend and lose the hurricane-season demand window.</p>
+              </div>
+              <div className="bg-red-950/50 border border-red-800/50 rounded-lg p-3">
+                <p className="text-sm font-semibold text-red-300">2. 🚨 Flash Bang MOLLE Pouch Breakout — Restock + Feature</p>
+                <p className="text-xs text-gray-300 mt-1">Both Flash Bang MOLLE Pouch SKUs hit 4.1× recent pace and are ALREADY out of stock (332 + 166 d30, 0 on hand each). 474 units sold this past week alone. Emergency restock and feature on the homepage — this is your biggest breakout signal of the month.</p>
               </div>
               <div className="bg-orange-950/50 border border-orange-800/50 rounded-lg p-3">
-                <p className="text-sm font-semibold text-orange-300">2. Father's Day Value Bundles (Soft launch Thu)</p>
-                <p className="text-xs text-gray-300 mt-1">Father's Day is June 21 and EDC is the hero gift category. With planned spend down ~70% to ~$86, lead with tiered, practical value bundles ($13–$206), not premium-only assortments. Launch the gift guide now to capture early planners.</p>
-              </div>
-              <div className="bg-orange-950/50 border border-orange-800/50 rounded-lg p-3">
-                <p className="text-sm font-semibold text-orange-300">3. Turkey-to-Fishing Handoff (Mid-week)</p>
-                <p className="text-xs text-gray-300 mt-1">Spring turkey closes this week in PA, NY, WI and New England. Run a turkey-load closeout while pivoting the hunting segment to post-spawn bass, walleye, and catfish tackle — the cleanest seasonal handoff of the year.</p>
+                <p className="text-sm font-semibold text-orange-300">3. Father's Day Bundle Launch (16 days out)</p>
+                <p className="text-xs text-gray-300 mt-1">NRF projects record $22.4B / $199 avg spend; the 35-44 cohort plans $278.90. Launch tiered EDC bundles ($25 / $75 / $200) now to clear shipping cutoffs. Your tactical assortment is thin — consider adding multi-tool and pocket-light SKUs ASAP.</p>
               </div>
             </div>
           </div>
 
-          {/* Store-Wide Reality Check (from real sales file) */}
+          {/* Store-Wide Reality Check (real sales) */}
           <div className="bg-gray-900 rounded-xl p-4 border border-cyan-900/50">
             <h2 className="text-lg font-bold mb-1 flex items-center gap-2 text-cyan-300"><Database size={18} /> Store-Wide Reality Check</h2>
             <p className="text-xs text-gray-500 mb-4">Source: {STORE_DATA_SOURCE}</p>
 
+            {/* OOS Risk */}
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-red-300 mb-2">🚨 Out-of-Stock Risk (less than 2 weeks of cover at current pace)</h3>
+              <div className="bg-gray-950 rounded overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-gray-700 text-gray-500">
+                      <th className="text-left p-2 font-medium">Product</th>
+                      <th className="text-right p-2 font-medium">On Hand</th>
+                      <th className="text-right p-2 font-medium">30d Sold</th>
+                      <th className="text-right p-2 font-medium">Cover (days)</th>
+                      <th className="text-left p-2 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {outOfStockRisk.map((p, i) => (
+                      <tr key={i} className="border-b border-gray-800/50">
+                        <td className="p-2 text-gray-200">{p.name}</td>
+                        <td className={`p-2 text-right font-mono ${p.oh === 0 ? "text-red-400 font-bold" : "text-yellow-300"}`}>{p.oh}</td>
+                        <td className="p-2 text-right text-white font-mono">{p.d30.toLocaleString()}</td>
+                        <td className={`p-2 text-right font-mono font-bold ${p.cover < 1 ? "text-red-400" : "text-yellow-300"}`}>{p.cover.toFixed(1)}</td>
+                        <td className="p-2 text-red-300 text-xs">{p.status}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Breakouts */}
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-green-400 mb-2">🔥 Breakouts (7-day pace running well above 30-day average)</h3>
+              <div className="bg-gray-950 rounded overflow-hidden">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-gray-700 text-gray-500">
+                      <th className="text-left p-2 font-medium">Product</th>
+                      <th className="text-left p-2 font-medium">Category</th>
+                      <th className="text-right p-2 font-medium">7d</th>
+                      <th className="text-right p-2 font-medium">30d</th>
+                      <th className="text-right p-2 font-medium">Lift</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {breakouts.map((p, i) => (
+                      <tr key={i} className="border-b border-gray-800/50">
+                        <td className="p-2 text-gray-200">{p.name}</td>
+                        <td className="p-2 text-gray-400">{p.category}</td>
+                        <td className="p-2 text-right text-white font-mono font-bold">{p.d7.toLocaleString()}</td>
+                        <td className="p-2 text-right text-gray-400 font-mono">{p.d30.toLocaleString()}</td>
+                        <td className="p-2 text-right text-green-400 font-mono font-bold">{p.mult.toFixed(1)}×</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
             {/* Top 10 movers */}
             <div className="mb-4">
-              <h3 className="text-sm font-bold text-cyan-300 mb-2">🔥 Top 10 Movers (last 30 days, store-wide)</h3>
+              <h3 className="text-sm font-bold text-cyan-300 mb-2">Top 10 Movers Store-Wide (last 30 days)</h3>
               <div className="bg-gray-950 rounded overflow-hidden">
                 <table className="w-full text-xs">
                   <thead>
@@ -609,7 +700,8 @@ export default function ArmyNavyTrendDashboard() {
                       <th className="text-left p-2 font-medium w-6">#</th>
                       <th className="text-left p-2 font-medium">Product</th>
                       <th className="text-left p-2 font-medium">Category</th>
-                      <th className="text-right p-2 font-medium">30-day Orders</th>
+                      <th className="text-right p-2 font-medium">30d</th>
+                      <th className="text-right p-2 font-medium">7d</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -619,31 +711,7 @@ export default function ArmyNavyTrendDashboard() {
                         <td className="p-2 text-gray-200">{p.name}</td>
                         <td className="p-2 text-gray-400">{p.category}</td>
                         <td className="p-2 text-right text-white font-mono font-bold">{p.d30.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Dead inventory */}
-            <div className="mb-4">
-              <h3 className="text-sm font-bold text-yellow-300 mb-2">⚠ Dead Inventory (≥ 20 on hand, ≤ 5 sold in 365 days)</h3>
-              <div className="bg-gray-950 rounded overflow-hidden">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="border-b border-gray-700 text-gray-500">
-                      <th className="text-left p-2 font-medium">Product</th>
-                      <th className="text-right p-2 font-medium">On Hand</th>
-                      <th className="text-right p-2 font-medium">365-day Orders</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {deadInventory.map((p, i) => (
-                      <tr key={i} className="border-b border-gray-800/50">
-                        <td className="p-2 text-gray-200">{p.name}</td>
-                        <td className="p-2 text-right text-yellow-300 font-mono">{p.available}</td>
-                        <td className="p-2 text-right text-gray-400 font-mono">{p.d365}</td>
+                        <td className="p-2 text-right text-gray-400 font-mono">{p.d7.toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -652,7 +720,7 @@ export default function ArmyNavyTrendDashboard() {
             </div>
 
             <div className="bg-cyan-950/30 border border-cyan-800/50 rounded p-3 text-xs text-gray-300 leading-relaxed">
-              <strong className="text-cyan-300">Cross-reference takeaway:</strong> Your actual store is far more emergency-and-surplus heavy than the categorical research implies. MREs and surplus canteens/pouches own the top 10 by an order of magnitude, and Hunting/Turkey/Fishing has essentially zero stocked inventory — recommend hiding that tile or replacing it with a category that matches the real assortment (e.g., 'MREs & Food Storage' or 'Bags & Carry'). The Scepter 5-gallon fuel can spike (0 → 84 in 30 days) and the sandbag surge (110 in 30d vs 220 all year) confirm the hurricane/storm-prep urgency story with real customer behavior.
+              <strong className="text-cyan-300">Cross-reference takeaway:</strong> Your real store is far more emergency-and-surplus heavy than the categorical research implies. MREs and MOLLE pouches own the top 10. The Flash Bang MOLLE Pouch breakout (316 of 332 monthly orders in just the last week, both SKUs now OOS) is the single biggest signal in the data — this product needs an emergency PO and a homepage feature TODAY. The Hunting / Turkey / Fishing category remains zero-stock — recommend hiding or pivoting that tile to something that matches your actual mix (MREs & Food Storage, or MOLLE & Carry).
             </div>
           </div>
         </div>
@@ -721,9 +789,9 @@ export default function ArmyNavyTrendDashboard() {
           <div className="bg-gray-900 rounded-xl p-4">
             <h3 className="text-sm font-bold text-gray-300 mb-2">Geo-Targeting Recommendations</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-red-950/30 rounded p-2"><strong className="text-red-400">Hurricane / Emergency:</strong> <span className="text-gray-300">Gulf & Atlantic coast — TX, LA, FL, GA, SC, NC + smoke belt</span></div>
-              <div className="bg-red-950/30 rounded p-2"><strong className="text-red-400">Storm / Flood:</strong> <span className="text-gray-300">TX, LA, TN, KY, OH Valley → NY; Upper Midwest heat</span></div>
-              <div className="bg-orange-950/30 rounded p-2"><strong className="text-orange-400">Turkey / Fishing:</strong> <span className="text-gray-300">PA, NY, WI, ME (closing) + nationwide fishing</span></div>
+              <div className="bg-red-950/30 rounded p-2"><strong className="text-red-400">Hurricane / Emergency:</strong> <span className="text-gray-300">Gulf & Atlantic coast — TX, LA, FL, GA, SC, NC</span></div>
+              <div className="bg-red-950/30 rounded p-2"><strong className="text-red-400">Tornado / Derecho:</strong> <span className="text-gray-300">NE, IA, MN, SD, ND, WI, IL, OH Valley</span></div>
+              <div className="bg-orange-950/30 rounded p-2"><strong className="text-orange-400">Heat & Flooding:</strong> <span className="text-gray-300">Southwest, Central Rockies, Southern High Plains, Southeast</span></div>
               <div className="bg-yellow-950/30 rounded p-2"><strong className="text-yellow-400">EDC / Surplus:</strong> <span className="text-gray-300">Nationwide — metro areas for EDC, rural for surplus</span></div>
             </div>
           </div>
@@ -734,7 +802,7 @@ export default function ArmyNavyTrendDashboard() {
       {activeTab === "tariffs" && (
         <div className="space-y-4">
           <h2 className="text-lg font-bold flex items-center gap-2"><AlertTriangle size={18} className="text-yellow-400" /> Tariff Impact Watch</h2>
-          <p className="text-sm text-gray-400">Section 122's 10% global tariff is still being collected (a May 12 appeals-court stay kept it alive) and expires July 24 — while the Supreme Court struck the separate 20% IEEPA layer. Pricing is volatile. Here's what to act on now.</p>
+          <p className="text-sm text-gray-400">Section 122's 10% global tariff is still being collected — the Federal Circuit's May 12 stay kept it alive while the appeal proceeds; the statute expires July 24. The Supreme Court struck the separate 20% IEEPA layer. Pricing remains volatile.</p>
           <div className="bg-gray-900 rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -761,14 +829,14 @@ export default function ArmyNavyTrendDashboard() {
           </div>
           <div className="bg-yellow-950/30 border border-yellow-800/50 rounded-lg p-4">
             <h3 className="text-sm font-bold text-yellow-300 mb-2">Strategic Takeaway</h3>
-            <p className="text-sm text-gray-300">Tariffs are both a margin threat and a marketing weapon. Imported soft goods — boots, packs, apparel — are up 10–20% with relief 'years away,' while the legal picture stays unsettled: the CIT struck Section 122 on May 7 but the Federal Circuit stayed that May 12, so CBP keeps collecting the 10% from nearly all importers through the July 24 statutory cap, and the Supreme Court's 6-3 ruling struck the separate 20% IEEPA layer. Position Army Navy Outdoors as the in-stock, pre-increase value play — genuine military surplus is the tariff-insulated alternative. Avoid overcommitting forward buys until the July picture clears.</p>
+            <p className="text-sm text-gray-300">Imported soft goods — boots, packs, apparel, EDC knives/lights — remain 10–25% more expensive than authentic surplus. The CIT struck Section 122 on May 7 but the Federal Circuit stayed that May 12, so CBP keeps collecting from nearly all importers through the July 24 statutory cap. Position Army Navy Outdoors as the in-stock, pre-increase value play — your real sales data already shows surplus MOLLE pouches and uniform pieces breaking out 4×, validating that positioning. Avoid overcommitting forward buys until the July picture clears.</p>
           </div>
         </div>
       )}
 
       {/* Footer */}
       <div className="mt-8 pt-4 border-t border-gray-800 text-center">
-        <p className="text-xs text-gray-600">Army Navy Outdoors — Weekly Trend Intelligence | Generated {SCAN_DATE} | Sources: NOAA, NHC, SPC, AccuWeather, NWTF, MeatEater, Benchmade, GearJunkie, NBC Select, Skadden, CNBC + internal sales forecasting report (5,082 SKUs)</p>
+        <p className="text-xs text-gray-600">Army Navy Outdoors — Weekly Trend Intelligence | Generated {SCAN_DATE} | Sources: NOAA, NHC, SPC, AccuWeather, NRF, Gibson Dunn / Skadden (tariff law) + internal sales forecasting report (1,450 SKUs)</p>
       </div>
     </div>
   );
